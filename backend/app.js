@@ -1,6 +1,7 @@
 const express = module.require('express');
 const bodyParser = module.require('body-parser');
 const mongoose = require('mongoose');
+const { isPostfixUnaryExpression } = require('typescript');
 
 const Post = module.require('./models/post');
 
@@ -49,10 +50,30 @@ app.get('/api/posts', (req, res, next) => {
     });
 });
 
+app.get('/api/posts/:id', (req, res, next) => {
+  Post.findById(req.params.id).then(post => {
+    if (post) {
+      res.status(200).json(post);
+    } else {
+      res.status(404);
+    }
+  });
+});
+
+app.put('/api/posts/:id', (req, res, next) => {
+  Post.findOne({_id: req.params.id})
+  .then(document => {
+    document.title = req.body.title;
+    document.content = req.body.content;
+    document.save().then(result =>{
+      res.status(200).json({ message: "Update Successful!" });
+    });
+  });
+});
+
 app.delete('/api/posts/:id', (req, res, next) => {
   Post.deleteOne({_id: req.params.id})
   .then(() => {
-    console.log('Deleted');
     res.status(200).json({message: 'Post Deleted'});
   });
 });
