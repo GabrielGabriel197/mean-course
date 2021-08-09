@@ -66,13 +66,21 @@ router.get('/:id', (req, res, next) => {
   });
 });
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', multer({storage: storage}).single("image"), (req, res, next) => {
   Post.findOne({_id: req.params.id})
   .then(document => {
+    let imagePath = req.body.imagePath;
+    if (req.file) {
+      const url = req.protocol + '://' + req.get('host');
+      imagePath = url + '/images/' + req.file.filename
+    }
+
     document.title = req.body.title;
     document.content = req.body.content;
+    document.imagePath = imagePath;
+
     document.save().then(result =>{
-      res.status(200).json({ message: "Update Successful!" });
+      res.status(200).json({ message: "Update Successful!", post: result });
     });
   });
 });
