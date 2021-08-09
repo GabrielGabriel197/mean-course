@@ -3,7 +3,6 @@ import { Post } from "./posts.model";
 import { Subject } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map } from 'rxjs/operators';
-import { identifierModuleUrl } from "@angular/compiler";
 import { Router } from "@angular/router";
 
 @Injectable({providedIn: 'root'})
