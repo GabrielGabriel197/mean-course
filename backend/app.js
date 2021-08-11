@@ -4,6 +4,7 @@ const mongoose = module.require('mongoose');
 const path = module.require('path');
 
 const postsRoutes = require('./routes/posts');
+const userRoutes = require('./routes/user');
 
 const uri = "mongodb+srv://gabreil:1Bv5ZcKqA4SvMSCk@mean.wucfp.mongodb.net/node-angular?retryWrites=true&w=majority";
 
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/posts", postsRoutes);
+app.use("/api/user", userRoutes);
 
 
 module.exports = app;
