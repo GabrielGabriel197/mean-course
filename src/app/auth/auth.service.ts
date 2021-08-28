@@ -7,7 +7,7 @@ import { AuthData } from "./auth-data.model";
 @Injectable({providedIn: 'root'})
 export class AuthService {
   private token: string;
-  private authServiceListener = new Subject<boolean>();
+  private authStatusListener = new Subject<boolean>();
   private isAuthenticated = false;
   private tokenTimer: any;
   private userId: string;
@@ -19,7 +19,7 @@ export class AuthService {
   }
 
   getAuthStatusListener() {
-    return this.authServiceListener.asObservable();
+    return this.authStatusListener.asObservable();
   }
 
   getisAuth() {
@@ -35,7 +35,9 @@ export class AuthService {
     const authData: AuthData = {email: email, password: password};
     this.http.post('http://localhost:3000/api/user/signup', authData)
       .subscribe(response => {
-        console.log(response);
+        this.router.navigate(['/']);
+      }, error => {
+        this.authStatusListener.next(false);
       });
   }
 
@@ -54,7 +56,7 @@ export class AuthService {
       this.userId = authInformation.userId;
       this.isAuthenticated = true;
       this.setAuthTimer(expiresIn / 1000);
-      this.authServiceListener.next(true);
+      this.authStatusListener.next(true);
     }
   }
 
@@ -72,13 +74,16 @@ export class AuthService {
           const expiresInDuration = response.expiresIn;
           this.setAuthTimer(expiresInDuration);
           this.isAuthenticated = true;
-          this.authServiceListener.next(true);
+          this.authStatusListener.next(true);
           const now = new Date();
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
           this.saveAuthData(token, expirationDate);
           this.userId = response.userId;
           this.router.navigate(['/']);
         }
+      }, error => {
+        console.log(error);
+        this.authStatusListener.next(false);
       });
   }
 
@@ -91,7 +96,7 @@ export class AuthService {
   logout() {
     this.token = null;
     this.isAuthenticated = false;
-    this.authServiceListener.next(false);
+    this.authStatusListener.next(false);
     this.userId = null;
     clearTimeout(this.tokenTimer);
     this.clearAuthData();
