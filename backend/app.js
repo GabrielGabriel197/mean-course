@@ -6,7 +6,7 @@ const path = module.require('path');
 const postsRoutes = require('./routes/posts');
 const userRoutes = require('./routes/user');
 
-const uri = "mongodb+srv://gabreil:1Bv5ZcKqA4SvMSCk@mean.wucfp.mongodb.net/node-angular?retryWrites=true&w=majority";
+const uri = "mongodb+srv://gabreil:"+process.env.MONGO_ATLAS_PW+"@mean.wucfp.mongodb.net/node-angular?retryWrites=true&w=majority";
 
 mongoose.connect(uri)
   .then(() => {
