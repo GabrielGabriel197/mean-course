@@ -19,6 +19,4 @@ import { PostListComponent } from "./post-list/post-list.component";
     AngularMaterialModule
   ]
 })
-export class PostsModule {
-
-}
+export class PostsModule {}
